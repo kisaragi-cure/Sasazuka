@@ -47,9 +47,10 @@ background-color: #ffffff;
 
 <!バージョン情報>
 <! 2026/05/13 4.01 飛田給・稲田堤延長/都線内京王列番表示バグ修正>
+<! 2026/09/23 4.02 ダイヤ選択機能>
 
 <nobr>
-<p> 都営新宿線　[自動更新：15秒]　　　　　　　　　　　　　　　　　　　　　　　　(C)Cure_kisaragi 2024-2026 / Ver.4.01 05/13</p>
+<p> 都営新宿線　[自動更新：15秒]　　　　　　　　　　　　　　　　　　　　　　　　(C)Cure_kisaragi 2024-2026 / Ver.4.02 09/23</p>
 
 <div style="position: absolute; top: 20px; left:10px; font-size:10pt"><p>本Webアプリが利用する公共交通データは、公共交通オープンデータセンターにおいて提供されるものです。交通事業者により提供されたデータを元に</p></div>
 <div style="position: absolute; top: 35px; left:10px; font-size:10pt"><p>していますが、必ずしも正確・完全なものとは限りません。本Webアプリの表示内容について、交通事業者への直接の問合せは行わないでください。</p></div>
@@ -64,6 +65,10 @@ background-color: #ffffff;
 
 <div id="koshin-T" style="position: absolute; top: 80px; left:370px; color:#000000; font-size:12pt; ">都営更新：ー</div>
 <div id="koshin-K" style="position: absolute; top: 80px; left:650px; color:#000000; font-size:12pt; ">京王更新：ー</div>
+
+<div style="position: absolute; top: 190px; left:30px; font-size:28pt"><input type="button" id = "weekend" value="休日ダイヤ" class="asakusabutton"></div>
+<div style="position: absolute; top: 190px; left:160px; font-size:28pt"><input type="button" id = "weekday" value="平日ダイヤ" class="asakusabutton"></div>
+
 
 
 <!本八幡発車>
@@ -1188,6 +1193,11 @@ background-color: #ffffff;
 
 
 ///////////////////////////////ここから新宿線
+	let now = new Date();
+      	let date = now.getDate();
+      	let month = now.getMonth();
+      	let year = now.getYear();
+	let today = '' + year +  month +  date;
 
 document.getElementById("asakusa").addEventListener("click", function () {
   location.href ="https://kisaragi-cure.github.io/ToeiAsakusa";
@@ -1331,6 +1341,17 @@ document.getElementById("koshin-T").innerHTML = koshinT ;
 	day = 0;
 	}
 
+	if (localStorage.getItem('weekday') == today) {
+      weekend.style.color = '#000000'; //文字
+      weekday.style.color = '#0000ff'; //文字
+	day = 1;
+	}
+	if (localStorage.getItem('weekend') == today) {
+      weekend.style.color = '#ff0000'; //文字
+      weekday.style.color = '#000000'; //文字
+	day = 0;
+	}
+
 now = now.getHours();
 
 	if ( now < 3 ) {
@@ -1358,11 +1379,15 @@ if ( day > 0 && day < 6 ) {
       var data6= JSON.parse(JSON.stringify(data5[1].odptstationTimetableObject)); 
       var data8= JSON.parse(JSON.stringify(data7[3].odptstationTimetableObject)); 
       var data9= JSON.parse(JSON.stringify(data5[1].odptstationTimetableObject)); 
+      weekday.style.color = '#0000ff'; //文字
+
 } else {
       var data4= JSON.parse(JSON.stringify(data3[0].odptstationTimetableObject)); 
       var data6= JSON.parse(JSON.stringify(data5[0].odptstationTimetableObject)); 
       var data8= JSON.parse(JSON.stringify(data7[2].odptstationTimetableObject)); 
       var data9= JSON.parse(JSON.stringify(data5[0].odptstationTimetableObject)); 
+      weekend.style.color = '#ff0000'; //文字
+
 }
       len3 = JSON.stringify(data4.length) ;
 if ( len3 - m > 100 && timesec != 4 ){
@@ -2807,8 +2832,8 @@ case ('"odpt.Station:Toei.Shinjuku.Ichigaya"'):
 		target = document.getElementById('ti18-2ad');
 		doc2= document.getElementById("ti18-2"); 
 		doc0= document.getElementById("ti18-2b");  
-		doc1= document.getElementById("ti18-2c");  
-		
+		doc1= document.getElementById("ti18-2c");
+
 		if ( ori == '["odpt.Station:Toei.Shinjuku.Ichigaya"]'){
 			nameText = document.getElementById('ti18-1a');
 			target = document.getElementById('ti18-1ad');
@@ -2816,7 +2841,7 @@ case ('"odpt.Station:Toei.Shinjuku.Ichigaya"'):
 			doc0= document.getElementById("ti18-1b");  
 			doc1= document.getElementById("ti18-1c");
 		}
-
+  
 	if ( index[unban1] != undefined){
 		if ( junban > 5 ){
 		junban = 6;
